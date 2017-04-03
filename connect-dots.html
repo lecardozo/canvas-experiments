@@ -1,0 +1,67 @@
+<!doctype html>
+<html style="height:100%; width:100%;">
+    <head>
+        <style>
+            html, body {
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body style="height:100%; width:100%;">
+        <canvas id='mycanvas' style="display:block">
+        </canvas>
+        <script>
+            var canvas = document.getElementById('mycanvas');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            var ctx = canvas.getContext('2d');
+            points = generatePoints(200);
+            draw(points);
+
+            function generatePoints(count) {
+                points = new Array();
+                while (count) {
+                    x = Math.random()*canvas.width;
+                    y = Math.random()*canvas.height;
+                    r = Math.floor((Math.random()*(6-2 + 1))+ 2);
+                    count--;
+                    points.push({"x":x, "y":y, "r":r});
+                }
+                return(points);
+            }
+            
+            function draw(points) {
+                ctx.clearRect(0,0,canvas.width, canvas.height);
+                ctx.fillStyle="#5cad4e";
+                ctx.fillRect(0,0, canvas.width, canvas.height)
+                ctx.fillStyle="#187018";
+                for (i=0; i<points.length; i++) {
+                    point = points[i]
+                    ctx.beginPath();
+                    ctx.arc(point.x, point.y, point.r, Math.PI * 2, false);
+                    ctx.fill();
+                }
+            };
+            
+            function connect(){
+                draw(points);
+                var mouseX = event.clientX;
+                var mouseY = event.clientY;
+                for (i = 0; i < points.length; i++){
+                    point = points[i]
+                    dist = Math.sqrt((mouseX-point.x)**2 +
+                                     (mouseY-point.y)**2)
+                    if (dist < 100) {
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.strokeStyle="#FFFFFF";
+                        ctx.moveTo(mouseX, mouseY);
+                        ctx.lineTo(point.x, point.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            canvas.addEventListener('mousemove', connect);
+        </script>
+    </body>
+</html>
